@@ -1,32 +1,62 @@
-## **HOMEWORK-5**
 1. Spring Profile nedir? Properties ya da yml dosya formları ile isbasi uygulamasına test
-profile ekleyin.(5 Puan)
+   profile ekleyin.(5 Puan)
+
+Profiller frameworkün temel özelliğidir, beanleri ayrı profillerde eşleştirmemize yarar. Örnek: test, dev, prod vs.
+Sadece ihtiyacımız olan beanleri aktive etmek için kullanılır.
+
+resources/application.yml:
+
+
+```
+spring:
+    config:
+        activate:
+            on-profile: test
+name: test-YAML
+environment: testing
+enabled: false
+servers: 
+    - www.abc.test.com
+    - www.xyz.test.com
+
+---
+spring:
+    config:
+        activate:
+            on-profile: prod
+name: prod-YAML
+environment: production
+enabled: true
+servers: 
+    - www.abc.com
+    - www.xyz.com
+```
+
+YML özelliklerini config clasına bağlamak: 
+
+```
+@Configuration
+@EnableConfigurationProperties
+@ConfigurationProperties
+public class YAMLConfig {
+ 
+    private String name;
+    private String environment;
+    private boolean enabled;
+    private List<String> servers = new ArrayList<>();
+
+
+}
+
+```
+
+
 2. SQL injection örnekleyin. Nasıl korunabiliriz?(5 Puan)
-3. Aşağıdaki kurallara göre bir film öneri uygulaması yazın. (90 Puan)
 
-### **Teknolojiler;**
-* Min Java8
-* Spring Boot
-* Restfull
-* MySQL - Postgre - Mongo(Her servis farklı database kullanabilir)
-* RabbitMQ
+SQL Injection (SQLi), kötü niyetli SQL ifadelerini çalıştırmayı mümkün kılan bir enjeksiyon saldırısı türüdür. 
+Bu ifadeler, bir web uygulamasının arkasındaki bir veritabanı sunucusunu kontrol eder. 
+Saldırganlar, uygulama güvenlik önlemlerini atlamak için SQL Injection güvenlik açıklarını kullanabilir.
 
-### **Gereksinimler;**
-
-* Kullanıcı sisteme kayıt olup, login olabilmelidir.(Login işlemi için email ve şifre bilgileri
-gereklidir.)
-* Kullanıcı şifresi istediğiniz bir hashing algoritmasıyla database kaydedilmelidir.
-* Kullanıcılar sisteme film ekleyebilir ve bu filmler herkes tarafından görülebilir.
-* Kullanıcı kendi eklediği filmleri görebilmeli.(Profil sayfası gibi düşünün)
-* Kullanıcı şifresini ve ismini değiştirebilir.
-* Ücretli üye olmayan kullanıcılar sadece 3 film ekleyebilir.
-* Ücretli üye olmayan kullanıcılar filmlere yorum yapamaz.
-* Sisteme yeni bir film girildiğinde kullanıcılara email gider.
-* Sistemi takip edebilmek için gerekli gördüğünüz yerlere Log ekleyin.
-
-### **Sistem Kabulleri;**
-
-* Ödeme işlemi senkron gerçekleşmelidir.
-* Ödeme servisi sadece ödeme bilgilerini kaydeder ve başarılı response döner.
-* Email gönderme işlemi asenkron gerçekleşmelidir.
-* Üyelikler 1-3-6-12 ay olarak alınabilir.
+SQL Injection saldırılarını önlemenin tek kesin yolu, giriş doğrulaması ve hazırlanmış ifadeler içeren parametreli sorgulardır. 
+Uygulama, inputu asla doğrudan kullanmamalıdır. Geliştirici,  tüm input tiplerini kontrol etmelidir. 
+Productiondaki veritabanı hatalarının görünürlüğünü kapatmak gereklidir. Bu hatalar, veritabanınız hakkında bilgi edinmek için SQL Injection ile kullanılabilir.
